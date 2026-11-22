@@ -2,6 +2,18 @@
 
 [![codecov](https://codecov.io/gh/rodi0878/NNPTP26-2/graph/badge.svg?token=7Y6B0HFZ1G)](https://codecov.io/gh/rodi0878/NNPTP26-2)
 
+## Data directory
+
+Data is stored in `.taskpulse` in the working directory by default.
+Use `--data-dir <path>` as the first argument to use another directory:
+
+```text
+--data-dir "my-data" project list
+--data-dir "my-data"
+```
+
+Without a command after the path, the interactive mode starts.
+
 ## CLI option values
 
 For `task list` and `worklog log`, use `--option=value` when a value begins

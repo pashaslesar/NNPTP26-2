@@ -9,6 +9,8 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,6 +55,35 @@ class TaskPulseAppTest {
         Worklog worklog = onlyTask().getWorklogs().get(0);
         assertThat(worklog.author()).isEqualTo("Student Developer");
         assertThat(worklog.description()).isEqualTo("First pass");
+    }
+
+    @Test
+    void dataDirOptionStoresWorkspaceInGivenDirectory() {
+        TaskPulseApp.main(new String[]{"--data-dir", dataDir.toString(), "project", "add", "Course"});
+
+        assertThat(onlyProject().getName()).isEqualTo("Course");
+    }
+
+    @Test
+    void dataDirOptionWithoutValueIsRejected() {
+        assertThat(errorOutputOfMain("--data-dir")).contains("Missing value for --data-dir");
+    }
+
+    @Test
+    void dataDirOptionFollowedBySwitchIsRejected() {
+        assertThat(errorOutputOfMain("--data-dir", "--demo")).contains("Missing value for --data-dir");
+    }
+
+    private String errorOutputOfMain(String... args) {
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(err));
+        try {
+            TaskPulseApp.main(args);
+        } finally {
+            System.setErr(originalErr);
+        }
+        return err.toString();
     }
 
     private Project onlyProject() {

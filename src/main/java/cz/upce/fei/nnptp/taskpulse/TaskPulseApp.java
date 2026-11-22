@@ -18,12 +18,22 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class TaskPulseApp {
     public static void main(String[] args) {
-        run(args, Paths.get(".taskpulse"));
+        Path dataDir = Paths.get(".taskpulse");
+        if (args.length > 0 && "--data-dir".equals(args[0])) {
+            if (args.length < 2 || args[1].startsWith("--")) {
+                System.err.println("Missing value for --data-dir. Usage: --data-dir <path> [command]");
+                return;
+            }
+            dataDir = Paths.get(args[1]);
+            args = Arrays.copyOfRange(args, 2, args.length);
+        }
+        run(args, dataDir);
     }
 
     static void run(String[] args, Path dataDir) {
